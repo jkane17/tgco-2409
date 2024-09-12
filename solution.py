@@ -9,6 +9,13 @@ def get_data(url : str, timeout=2) -> dict[str, list[dict[str, Any]]]:
     if not r.ok: r.raise_for_status()
     return r.json()
 
+def validate(data):
+    ids = []
+    for d in data:
+        ids.append(d["ID"])
+    if len(ids) != len(set(ids)):
+        raise ValueError("IDs not unique")
+
 def get_max_amount(invoices_df : pd.DataFrame) -> pd.DataFrame:
     """Returns rows from input df whose amount equals the maximum amount"""
     spent_df = invoices_df.groupby("customerId")["amount"].sum().reset_index()
@@ -33,9 +40,11 @@ def main():
     invoices_url = "http://localhost:9092/"
 
     customers = get_data(customers_url)["customers"]
+    validate(customers)
     customers_df = pd.DataFrame(customers)
 
     invoices = get_data(invoices_url)["invoices"]
+    validate(invoices)
     invoices_df = pd.DataFrame(invoices)
 
     max_df = get_max_amount(invoices_df)

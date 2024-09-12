@@ -1,6 +1,6 @@
 
 import requests
-from solution import get_data, get_max_amount, get_customers_amounts
+from solution import get_data, validate, get_max_amount, get_customers_amounts
 from unittest import TestCase
 import pandas as pd
 
@@ -13,6 +13,43 @@ class TestGetData(TestCase):
     def test_timeout(self):
         url = "http://localhost:9091/"
         self.assertRaises(requests.exceptions.Timeout, get_data, url)
+
+class TestValidate(TestCase):
+    def setUp(self):
+        self.customers_df = [
+            {
+                "ID": 0,
+                "name": "Alice",
+                "surname": "Klark"
+            },
+            {
+                "ID": 1,
+                "name": "Bob",
+                "surname": "McAdoo"
+            },
+        ]
+
+        self.non_unique_customers_df = [
+            {
+                "ID": 0,
+                "name": "Alice",
+                "surname": "Klark"
+            },
+            {
+                "ID": 0,
+                "name": "Bob",
+                "surname": "McAdoo"
+            },
+        ]
+
+    def test_unique_ids(self):
+        try:
+            validate(self.customers_df)
+        except ValueError:
+            self.fail()
+
+    def test_non_unique_ids(self):
+        self.assertRaises(ValueError, validate, self.non_unique_customers_df)
 
 class TestGetMaxAmount(TestCase):
     def setUp(self):
