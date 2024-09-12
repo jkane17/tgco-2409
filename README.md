@@ -70,3 +70,15 @@ Tip: No, "I will let QA decide" is not an option
 # EVEN MORE EXTRA POINTS
 
 The team with highest test coverage will be awarded 5 extra points!
+
+# HOW TO RUN
+
+```
+python solution.py
+```
+
+# HOW TO RUN TESTS
+
+```
+pytest
+```
